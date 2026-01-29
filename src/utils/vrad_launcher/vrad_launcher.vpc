@@ -22,6 +22,12 @@ $Configuration
 	{
 		$EnableLargeAddresses				"Support Addresses Larger Than 2 Gigabytes (/LARGEADDRESSAWARE)"
 	}
+
+	$PostBuildEvent
+	{
+		$CommandLine		"$BASE" "copy $SRCDIR\devtools\bin\tier0.dll $OUTBINDIR\tier0.dll >nul" "\n" \
+							"copy $SRCDIR\devtools\bin\vstdlib.dll $OUTBINDIR\vstdlib.dll >nul" "\n"
+	}
 }
 
 $Project "VRAD (Launcher)"
