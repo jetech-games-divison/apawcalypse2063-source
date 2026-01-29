@@ -2933,6 +2933,12 @@ int RunVRAD( int argc, char **argv )
 	CmdLib_InitFileSystem( argv[ i ] );
 	Q_FileBase( source, source, sizeof( source ) );
 
+	// Load additional commandline arguments from the config file.
+	// This must happen after the filesystem is initialized.
+	LoadCmdLineFromFile( argc, argv, source, "vrad" );
+	// Re-parse the command line to pick up any new arguments.
+	ParseCommandLine( argc, argv, &onlydetail );
+
 	VRAD_LoadBSP( argv[i] );
 
 	if ( (! onlydetail) && (! g_bOnlyStaticProps ) )
@@ -2960,24 +2966,7 @@ int VRAD_Main(int argc, char **argv)
 
 	VRAD_Init();
 
-	// This must come first.
-#ifdef MPI
-	VRAD_SetupMPI( argc, argv );
-#endif
-
-#ifdef MPI
-#if !defined( _DEBUG )
-	if ( g_bUseMPI && !g_bMPIMaster )
-	{
-		SetupToolsMinidumpHandler( VMPI_ExceptionFilter );
-	}
-	else
-#endif
-#endif
-	{
-		LoadCmdLineFromFile( argc, argv, source, "vrad" ); // Don't do this if we're a VMPI worker..
-		SetupDefaultToolsMinidumpHandler();
-	}
+	SetupDefaultToolsMinidumpHandler( );
 	
 	return RunVRAD( argc, argv );
 }
